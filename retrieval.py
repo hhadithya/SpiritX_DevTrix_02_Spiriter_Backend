@@ -1,7 +1,7 @@
 import pandas as pd
 import faiss
 import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sentence_transformers import SentenceTransformer
 
 dataset_path = "data/sample_data.csv"
 df = pd.read_csv(dataset_path)
@@ -12,15 +12,15 @@ df["search_text"] = df.apply(lambda x: (
     f"He has taken {x['Wickets']} wickets, bowled {x['Overs Bowled']} overs, conceding {x['Runs Conceded']} runs."    
 ), axis=1)
 
-vectorizer = TfidfVectorizer()
-vectors = vectorizer.fit_transform(df["search_text"]).toarray()
+model = SentenceTransformer("all-MiniLM-L6-v2")
+embeddings = model.encode(df["search_text"].tolist(), convert_to_numpy=True)
 
-dimension = vectors.shape[1]
+dimension = embeddings.shape[1]
 index = faiss.IndexFlatL2(dimension)
-index.add(np.array(vectors).astype(np.float32))
+index.add(embeddings)
 
 def search_player(query: str):
-    query_vector = vectorizer.transform([query]).toarray().astype(np.float32)
+    query_vector = model.encode(query, convert_to_numpy=True)
     _, indices = index.search(query_vector, k=1)
     best_match = df.iloc[indices[0][0]]
 
