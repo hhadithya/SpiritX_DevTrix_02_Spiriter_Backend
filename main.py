@@ -21,6 +21,7 @@ def get_details(player_name: str):
 
     return {"response": response}
 
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
