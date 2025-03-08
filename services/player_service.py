@@ -1,7 +1,6 @@
-from firebase_admin import firestore
+from config.firebase_config import db
 from typing import List, Optional
 
-db = firestore.client()
 players_collection = db.collection("players")
 
 
@@ -19,9 +18,9 @@ def get_all_players(category: Optional[str] = None) -> List[dict]:
 def get_player(player_id: str) -> Optional[dict]:
     """Retrieve a single active player by ID."""
     player_doc = players_collection.document(player_id).get()
-    if player_doc.exists and player_doc.to_dict().get("active", False):
+    if player_doc.exists and player_doc.to_dict().get("activeStatus", False):
         return {**player_doc.to_dict(), "id": player_doc.id}
-    return None
+    return {"message": None}
 
 def add_player(name: str, category: str , basePrice: float) -> dict:
     """Add a new player and return the created player data."""
@@ -29,7 +28,7 @@ def add_player(name: str, category: str , basePrice: float) -> dict:
         "name": name,
         "category": category,
         "basePrice": basePrice,
-        "active": True  # if this is false then is it considered as deleted
+        "activeStatus": True  # if this is false then is it considered as deleted
     }
     new_player_ref = players_collection.add(player_data)
     return {"id": new_player_ref[1].id, **player_data}

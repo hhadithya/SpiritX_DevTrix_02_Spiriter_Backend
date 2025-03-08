@@ -7,7 +7,6 @@ router = APIRouter(
     tags=["admin"],
 )
 
-
 ###### Player managment routes ########
 player_router = APIRouter(
     prefix="/players",

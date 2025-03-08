@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Query
 from retrieval import search_player
 from generation import generate_response
+from routes.admin_rotutes import player_router
 
 app = FastAPI()
 
@@ -17,6 +18,7 @@ def query_chatbot(query: str = Query(..., description="Enter player-related quer
     except Exception:
         return {"response": "I don't have enough knowledge to answer that question."}
 
+app.include_router(player_router)
 
 if __name__ == "__main__":
     import uvicorn
