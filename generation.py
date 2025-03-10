@@ -8,8 +8,8 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 genai.configure(api_key=GEMINI_API_KEY)
 
-def gemini_response(player_name, player_info):
-    prompt = f"Here are the details of {player_name}: {player_info}. Format this information naturally."
+def generate_response(player_name: str, player_info: str):
+    prompt = f"Here are the cricket stats of {player_name}: {player_info}. Format this information in a natural and engaging way."
 
     model = genai.GenerativeModel("gemini-1.5-pro")
 
